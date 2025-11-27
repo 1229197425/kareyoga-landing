@@ -32,16 +32,12 @@
         .left {
             flex: 1.15;
             min-height: 360px;
-            background: #020617; /* 图片留白时是深色背景 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .left img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 显示完整图片，人像会变小 */
+            object-fit: cover; /* 回到铺满区域的效果 */
             display: block;
         }
 
@@ -66,6 +62,15 @@
             text-transform: uppercase;
             color: #64748b;
             font-weight: 600;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            background: #f8fafc;
         }
 
         h1 {
@@ -219,9 +224,16 @@
         }
 
         @media (max-width: 768px) {
+            /* 手机端去掉“边框感”，全屏铺开 */
+            body {
+                background: #ffffff;
+            }
+            .page-shell {
+                padding: 0;
+            }
             .wrapper {
-                flex-direction: column;
-                margin-top: 12px;
+                border-radius: 0;
+                box-shadow: none;
             }
             .right {
                 padding: 22px 18px 24px;
@@ -256,13 +268,13 @@
 <div class="page-shell">
     <div class="wrapper">
         <div class="left">
-            <!-- JS 会根据条件替换图片 -->
             <img id="heroImage" src="product_warm.jpg" alt="Kare Yoga program" />
         </div>
 
         <div class="right">
             <div class="brand-row">
                 <div class="brand-name">Kare Yoga Online</div>
+                <div class="badge">Online introductory session</div>
             </div>
 
             <div id="form-section">
@@ -317,13 +329,11 @@
 </div>
 
 <script>
-    // ======= 在这里填入你的 Apps Script Web App URL（以 /exec 结尾） =======
+    // ======= 这里保持你自己的 Apps Script URL（如果整页替换，请改回实际地址） =======
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
     // ===============================================================
 
-    // 四个实验条件的配置
     const CONDITION_CONFIG = {
-        // Locomotion + Warm
         L_Warm: {
             image: "product_warm.jpg",
             buttonClass: "btn-warm",
@@ -339,7 +349,6 @@
             closing1: "We’re launching an energetic introduction session for new members ready to move forward with Kare Yoga.",
             closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
         },
-        // Locomotion + Cold
         L_Cold: {
             image: "product_cold.jpg",
             buttonClass: "btn-cold",
@@ -355,7 +364,6 @@
             closing1: "We’re launching an energetic introduction session for new members ready to move forward with Kare Yoga.",
             closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
         },
-        // Assessment + Warm
         A_Warm: {
             image: "product_warm.jpg",
             buttonClass: "btn-warm",
@@ -371,7 +379,6 @@
             closing1: "We’re preparing a free introduction session for new members interested in mindful practice.",
             closing2: "Enter your email to receive detailed course information and choose the plan that fits you best."
         },
-        // Assessment + Cold
         A_Cold: {
             image: "product_cold.jpg",
             buttonClass: "btn-cold",
@@ -423,19 +430,17 @@
             return;
         }
 
-        // 1）确定实验条件：URL 有 cond 且有效就用，否则随机一个
         const params = new URLSearchParams(window.location.search);
         let cond = params.get("cond");
         if (!cond || !(cond in CONDITION_CONFIG)) {
             const keys = Object.keys(CONDITION_CONFIG);
             cond = keys[Math.floor(Math.random() * keys.length)];
-            // 如需在地址栏反映随机结果，可以取消下面这行注释
+            // 如需把随机条件写回 URL，可取消下一行注释
             // history.replaceState(null, "", "?cond=" + cond);
         }
         const config = CONDITION_CONFIG[cond];
         conditionField.value = cond;
 
-        // 2）根据条件更新页面内容
         heroImage.src = config.image;
         heroImage.alt = cond;
 
@@ -456,19 +461,15 @@
         ctaButton.classList.remove("btn-warm", "btn-cold");
         ctaButton.classList.add(config.buttonClass);
 
-        // 3）生成 subject_id
         const subjectId = generateSubjectId();
         subjectField.value = subjectId;
 
-        // 防止重复提交
         let isSubmitting = false;
 
-        // 4）邮箱输入事件
         emailInput.addEventListener("input", () => {
             emailError.textContent = "";
         });
 
-        // 5）提交事件
         form.addEventListener("submit", function (event) {
             event.preventDefault();
             if (isSubmitting) return;
@@ -496,7 +497,6 @@
 
             const body = new URLSearchParams(data);
 
-            // 进入“提交中”状态：禁用按钮 + 显示 loading
             isSubmitting = true;
             ctaButton.disabled = true;
             loadingIndicator.classList.add("active");
@@ -519,7 +519,6 @@
                 .catch((error) => {
                     console.error("提交出错：", error);
                     alert("提交失败：" + error.message);
-                    // 失败时恢复按钮，允许用户重新提交
                     isSubmitting = false;
                     ctaButton.disabled = false;
                 })
