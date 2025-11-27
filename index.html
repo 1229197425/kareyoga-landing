@@ -37,7 +37,7 @@
         .left img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 回到铺满区域的效果 */
+            object-fit: cover; /* 桌面端铺满区域 */
             display: block;
         }
 
@@ -224,7 +224,7 @@
         }
 
         @media (max-width: 768px) {
-            /* 手机端去掉“边框感”，全屏铺开 */
+            /* 手机端恢复“上图下文”的感觉，并且取消卡片边框感 */
             body {
                 background: #ffffff;
             }
@@ -234,12 +234,18 @@
             .wrapper {
                 border-radius: 0;
                 box-shadow: none;
+                flex-direction: column;
+            }
+            .left {
+                min-height: auto;
+            }
+            .left img {
+                height: auto;
+                max-height: 260px;
+                object-fit: contain;  /* 手机端不裁切，整张图更小更完整 */
             }
             .right {
                 padding: 22px 18px 24px;
-            }
-            .left {
-                min-height: 220px;
             }
             button {
                 width: 100%;
@@ -268,7 +274,7 @@
 <div class="page-shell">
     <div class="wrapper">
         <div class="left">
-            <img id="heroImage" src="product_warm.jpg" alt="Kare Yoga program" />
+            <img id="heroImage" src="warm.png" alt="Kare Yoga program" />
         </div>
 
         <div class="right">
@@ -329,13 +335,15 @@
 </div>
 
 <script>
-    // ======= 这里保持你自己的 Apps Script URL（如果整页替换，请改回实际地址） =======
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
+    // ======= 在这里填入你的 Apps Script Web App URL（以 /exec 结尾） =======
+    const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
     // ===============================================================
 
+    // 四个条件：区分桌面图片 & 手机图片
     const CONDITION_CONFIG = {
         L_Warm: {
-            image: "product_warm.jpg",
+            desktopImage: "warm.png",
+            mobileImage: "product_warm.jpg",
             buttonClass: "btn-warm",
             buttonText: "Get Started Now",
             headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
@@ -350,7 +358,8 @@
             closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
         },
         L_Cold: {
-            image: "product_cold.jpg",
+            desktopImage: "cold.png",
+            mobileImage: "product_cold.jpg",
             buttonClass: "btn-cold",
             buttonText: "Get Started Now",
             headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
@@ -365,7 +374,8 @@
             closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
         },
         A_Warm: {
-            image: "product_warm.jpg",
+            desktopImage: "warm.png",
+            mobileImage: "product_warm.jpg",
             buttonClass: "btn-warm",
             buttonText: "Learn More",
             headline: "Find Your Perfect Balance — Meditation Yoga Online with Kare Yoga",
@@ -380,7 +390,8 @@
             closing2: "Enter your email to receive detailed course information and choose the plan that fits you best."
         },
         A_Cold: {
-            image: "product_cold.jpg",
+            desktopImage: "cold.png",
+            mobileImage: "product_cold.jpg",
             buttonClass: "btn-cold",
             buttonText: "Learn More",
             headline: "Find Your Perfect Balance — Meditation Yoga Online with Kare Yoga",
@@ -435,13 +446,17 @@
         if (!cond || !(cond in CONDITION_CONFIG)) {
             const keys = Object.keys(CONDITION_CONFIG);
             cond = keys[Math.floor(Math.random() * keys.length)];
-            // 如需把随机条件写回 URL，可取消下一行注释
+            // 如需在地址栏写回随机条件，可取消下面一行注释
             // history.replaceState(null, "", "?cond=" + cond);
         }
         const config = CONDITION_CONFIG[cond];
         conditionField.value = cond;
 
-        heroImage.src = config.image;
+        // 判断当前是否为手机宽度
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const imgSrc = isMobile ? config.mobileImage : config.desktopImage;
+
+        heroImage.src = imgSrc;
         heroImage.alt = cond;
 
         headlineEl.textContent = config.headline;
