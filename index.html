@@ -9,24 +9,28 @@
         body {
             margin: 0;
             padding: 0;
-            background: #f5f6fa;
+            background: linear-gradient(135deg, #f5f6fa, #eef3ff);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
             color: #1a1a1a;
         }
 
+        .page-shell {
+            padding: 20px 12px 40px;
+        }
+
         .wrapper {
             max-width: 960px;
-            margin: 60px auto;
+            margin: 0 auto;
             background: #ffffff;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
             display: flex;
             flex-direction: row;
         }
 
         .left {
-            flex: 1.2;
+            flex: 1.15;
             min-height: 360px;
         }
 
@@ -39,32 +43,56 @@
 
         .right {
             flex: 1;
-            padding: 35px 40px;
+            padding: 30px 36px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .brand-name {
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            background: #f8fafc;
+        }
+
         h1 {
             font-size: 20px;
-            margin: 0 0 16px;
+            margin: 0 0 14px;
             font-weight: 600;
             line-height: 1.4;
         }
 
         .lead {
             font-size: 14px;
-            color: #333;
+            color: #334155;
             line-height: 1.6;
             margin-bottom: 14px;
         }
 
         ul {
-            margin: 0 0 14px 18px;
+            margin: 0 0 12px 18px;
             padding: 0;
             font-size: 14px;
             line-height: 1.6;
-            color: #333;
+            color: #475569;
         }
 
         ul li {
@@ -73,7 +101,7 @@
 
         .closing {
             font-size: 14px;
-            color: #333;
+            color: #475569;
             line-height: 1.6;
             margin-bottom: 6px;
         }
@@ -91,11 +119,17 @@
 
         input[type="email"] {
             padding: 8px 6px;
-            border-radius: 0;
-            border: 1px solid #333;
+            border-radius: 6px;
+            border: 1px solid #cbd5f1;
             font-size: 14px;
             width: 100%;
             box-sizing: border-box;
+            outline: none;
+        }
+
+        input[type="email"]:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.15);
         }
 
         .helper-text {
@@ -116,39 +150,86 @@
             padding: 10px;
             font-size: 14px;
             color: white;
-            border-radius: 2px;
+            border-radius: 999px;
             cursor: pointer;
-            width: 160px;
+            width: 180px;
             border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: default;
         }
 
         /* 暖色按钮（橙色） */
         .btn-warm {
-            background: #f46b3c;
-            border-color: #f46b3c;
+            background: #f97316;
+            border-color: #f97316;
+            box-shadow: 0 8px 14px rgba(248, 113, 22, 0.25);
         }
-        .btn-warm:hover {
-            background: #e05526;
-            border-color: #e05526;
+        .btn-warm:hover:not(:disabled) {
+            background: #ea580c;
+            border-color: #ea580c;
         }
 
         /* 冷色按钮（蓝色） */
         .btn-cold {
-            background: #2f80ed;
-            border-color: #2f80ed;
+            background: #2563eb;
+            border-color: #2563eb;
+            box-shadow: 0 8px 14px rgba(37, 99, 235, 0.25);
         }
-        .btn-cold:hover {
-            background: #1c67d2;
-            border-color: #1c67d2;
+        .btn-cold:hover:not(:disabled) {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .loading-indicator {
+            display: none;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #94a3b8;
+            animation: bounce 0.9s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.12s; }
+        .dot:nth-child(3) { animation-delay: 0.24s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-4px); opacity: 1; }
         }
 
         @media (max-width: 768px) {
             .wrapper {
                 flex-direction: column;
-                margin: 20px auto;
+                margin-top: 12px;
             }
             .right {
-                padding: 24px 18px;
+                padding: 22px 18px 24px;
             }
             .left {
                 min-height: 220px;
@@ -173,54 +254,79 @@
             line-height: 1.6;
             margin-bottom: 6px;
         }
+
+        .success-note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
     </style>
 </head>
 
 <body>
-
-<div class="wrapper">
-    <div class="left">
-        <!-- 初始给一个占位图，JS 会根据条件替换 -->
-        <img id="heroImage" src="product_warm.jpg" alt="Kare Yoga program" />
-    </div>
-
-    <div class="right">
-        <div id="form-section">
-            <h1 id="headline"></h1>
-
-            <p class="lead" id="lead"></p>
-
-            <ul id="bulletList"></ul>
-
-            <p class="closing" id="closing1"></p>
-            <p class="closing" id="closing2"></p>
-
-            <label class="email-label" for="email-input">
-                Email<span style="color:#d93025">*</span>
-            </label>
-
-            <form id="visible-form">
-                <input type="hidden" id="stayTimeField" name="stay_seconds" />
-                <input type="hidden" id="subjectIdField" name="subject_id" />
-                <input type="hidden" id="conditionField" name="condition" />
-
-                <input
-                    id="email-input"
-                    type="email"
-                    name="email"
-                    required
-                />
-                <div class="helper-text">Please complete this required field.</div>
-                <div id="email-error" class="error-message"></div>
-
-                <button id="ctaButton" type="submit">Submit</button>
-            </form>
+<div class="page-shell">
+    <div class="wrapper">
+        <div class="left">
+            <!-- 初始给一个占位图，JS 会根据条件替换 -->
+            <img id="heroImage" src="product_warm.jpg" alt="Kare Yoga program" />
         </div>
 
-        <div id="success-section" class="success-card">
-            <h2>Thank you for joining Kare Yoga</h2>
-            <p>Your email has been received.</p>
-            <p>We’ll contact you with more details about the upcoming online session.</p>
+        <div class="right">
+            <div class="brand-row">
+                <div class="brand-name">Kare Yoga Online</div>
+                <div class="badge">Research study invitation</div>
+            </div>
+
+            <div id="form-section">
+                <h1 id="headline"></h1>
+
+                <p class="lead" id="lead"></p>
+
+                <ul id="bulletList"></ul>
+
+                <p class="closing" id="closing1"></p>
+                <p class="closing" id="closing2"></p>
+
+                <label class="email-label" for="email-input">
+                    Email<span style="color:#d93025">*</span>
+                </label>
+
+                <form id="visible-form">
+                    <input type="hidden" id="stayTimeField" name="stay_seconds" />
+                    <input type="hidden" id="subjectIdField" name="subject_id" />
+                    <input type="hidden" id="conditionField" name="condition" />
+
+                    <input
+                        id="email-input"
+                        type="email"
+                        name="email"
+                        autocomplete="email"
+                        required
+                    />
+                    <div class="helper-text">Please complete this required field.</div>
+                    <div id="email-error" class="error-message"></div>
+
+                    <button id="ctaButton" type="submit">
+                        <span id="ctaText">Submit</span>
+                    </button>
+
+                    <div id="loading-indicator" class="loading-indicator" aria-hidden="true">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <span>Submitting…</span>
+                    </div>
+                </form>
+            </div>
+
+            <div id="success-section" class="success-card">
+                <h2>Thank you for joining Kare Yoga</h2>
+                <p>Your email has been received.</p>
+                <p>We’ll contact you with more details about the upcoming online session.</p>
+                <p class="success-note">
+                    This page is part of an academic research study on online yoga programs and decision-making.
+                </p>
+            </div>
         </div>
     </div>
 </div>
@@ -324,6 +430,8 @@
         const closing1El = document.getElementById("closing1");
         const closing2El = document.getElementById("closing2");
         const ctaButton = document.getElementById("ctaButton");
+        const ctaText = document.getElementById("ctaText");
+        const loadingIndicator = document.getElementById("loading-indicator");
 
         if (!form) {
             console.error("没有找到表单 #visible-form");
@@ -359,13 +467,16 @@
         closing1El.textContent = config.closing1;
         closing2El.textContent = config.closing2;
 
-        ctaButton.textContent = config.buttonText;
+        ctaText.textContent = config.buttonText;
         ctaButton.classList.remove("btn-warm", "btn-cold");
         ctaButton.classList.add(config.buttonClass);
 
         // 3）生成 subject_id
         const subjectId = generateSubjectId();
         subjectField.value = subjectId;
+
+        // 防止重复提交
+        let isSubmitting = false;
 
         // 4）邮箱输入事件
         emailInput.addEventListener("input", () => {
@@ -375,6 +486,7 @@
         // 5）提交事件
         form.addEventListener("submit", function (event) {
             event.preventDefault();
+            if (isSubmitting) return;
 
             const emailValue = emailInput.value.trim();
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -399,6 +511,11 @@
 
             const body = new URLSearchParams(data);
 
+            // 进入“提交中”状态：禁用按钮 + 显示 loading
+            isSubmitting = true;
+            ctaButton.disabled = true;
+            loadingIndicator.classList.add("active");
+
             fetch(SCRIPT_URL, {
                 method: "POST",
                 body: body
@@ -417,6 +534,12 @@
                 .catch((error) => {
                     console.error("提交出错：", error);
                     alert("提交失败：" + error.message);
+                })
+                .finally(() => {
+                    // 不再恢复按钮，因为已经切到成功卡片；
+                    // 如果未来需要在错误时恢复按钮，可以在 catch 内单独处理。
+                    loadingIndicator.classList.remove("active");
+                    isSubmitting = false;
                 });
         });
     });
@@ -424,4 +547,3 @@
 
 </body>
 </html>
-
