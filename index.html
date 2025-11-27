@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Power Yoga Online – Study Invitation</title>
+    <title>Kare Yoga Online – Study Invitation</title>
 
     <style>
         body {
@@ -98,10 +98,16 @@
             box-sizing: border-box;
         }
 
-        .error-message {
+        .helper-text {
             font-size: 12px;
             color: #d93025;
             margin-top: 4px;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: #d93025;
+            margin-top: 2px;
             min-height: 16px;
         }
 
@@ -109,17 +115,31 @@
             margin-top: 14px;
             padding: 10px;
             font-size: 14px;
-            background: #f46b3c;
             color: white;
-            border: 1px solid #f46b3c;
             border-radius: 2px;
             cursor: pointer;
             width: 160px;
+            border: 1px solid transparent;
         }
 
-        button:hover {
+        /* 暖色按钮（橙色） */
+        .btn-warm {
+            background: #f46b3c;
+            border-color: #f46b3c;
+        }
+        .btn-warm:hover {
             background: #e05526;
             border-color: #e05526;
+        }
+
+        /* 冷色按钮（蓝色） */
+        .btn-cold {
+            background: #2f80ed;
+            border-color: #2f80ed;
+        }
+        .btn-cold:hover {
+            background: #1c67d2;
+            border-color: #1c67d2;
         }
 
         @media (max-width: 768px) {
@@ -160,31 +180,20 @@
 
 <div class="wrapper">
     <div class="left">
-        <img src="warm.jpg" alt="Power Yoga" />
+        <!-- 初始给一个占位图，JS 会根据条件替换 -->
+        <img id="heroImage" src="product_warm.jpg" alt="Kare Yoga program" />
     </div>
 
     <div class="right">
         <div id="form-section">
-            <h1>Start Your Flow Today — Power Yoga Online with Carrie Yoga</h1>
+            <h1 id="headline"></h1>
 
-            <p class="lead">
-                Your journey to strength and energy begins <em>now</em>. Join live, dynamic Power Yoga sessions
-                designed to keep you moving, progressing, and achieving your daily goals.
-            </p>
+            <p class="lead" id="lead"></p>
 
-            <ul>
-                <li>Fast-paced live classes with real-time feedback</li>
-                <li>Designed to energize both body and mind</li>
-                <li>Boost stamina and flexibility through every session</li>
-                <li>Stay motivated with our weekly progress tracker</li>
-            </ul>
+            <ul id="bulletList"></ul>
 
-            <p class="closing">
-                We’re launching an energetic introduction session for new members ready to move forward with Power Yoga.
-            </p>
-            <p class="closing">
-                Enter your email to reserve your spot and be the first to kick off your flow with Carrie Yoga Online.
-            </p>
+            <p class="closing" id="closing1"></p>
+            <p class="closing" id="closing2"></p>
 
             <label class="email-label" for="email-input">
                 Email<span style="color:#d93025">*</span>
@@ -201,24 +210,93 @@
                     name="email"
                     required
                 />
+                <div class="helper-text">Please complete this required field.</div>
                 <div id="email-error" class="error-message"></div>
 
-                <button type="submit">Get Started Now</button>
+                <button id="ctaButton" type="submit">Submit</button>
             </form>
         </div>
 
         <div id="success-section" class="success-card">
-            <h2>Thank you for joining us</h2>
+            <h2>Thank you for joining Kare Yoga</h2>
             <p>Your email has been received.</p>
-            <p>We’ll contact you with more details about the upcoming Power Yoga introduction session.</p>
+            <p>We’ll contact you with more details about the upcoming online session.</p>
         </div>
     </div>
 </div>
 
 <script>
-    // ======= 在这里填入你的 Apps Script Web App URL =======
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
-    // ======================================================
+    // ======= 在这里填入你的 Apps Script Web App URL（以 /exec 结尾） =======
+    const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
+    // ===============================================================
+
+    // 四个实验条件的配置
+    const CONDITION_CONFIG = {
+        // Locomotion + Warm
+        L_Warm: {
+            image: "product_warm.jpg",
+            buttonClass: "btn-warm",
+            buttonText: "Get Started Now",
+            headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
+            lead: "Your journey to strength and energy begins <em>now</em>. Join live, dynamic Power Yoga sessions designed to keep you moving, progressing, and achieving your daily goals.",
+            bullets: [
+                "Fast-paced live classes with real-time feedback",
+                "Designed to energize both body and mind",
+                "Boost stamina and flexibility through every session",
+                "Stay motivated with our weekly progress tracker"
+            ],
+            closing1: "We’re launching an energetic introduction session for new members ready to move forward with Kare Yoga.",
+            closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
+        },
+        // Locomotion + Cold
+        L_Cold: {
+            image: "product_cold.jpg",
+            buttonClass: "btn-cold",
+            buttonText: "Get Started Now",
+            headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
+            lead: "Your journey to strength and energy begins <em>now</em>. Join live, dynamic Power Yoga sessions designed to keep you moving, progressing, and achieving your daily goals.",
+            bullets: [
+                "Fast-paced live classes with real-time feedback",
+                "Designed to energize both body and mind",
+                "Boost stamina and flexibility through every session",
+                "Stay motivated with our weekly progress tracker"
+            ],
+            closing1: "We’re launching an energetic introduction session for new members ready to move forward with Kare Yoga.",
+            closing2: "Enter your email to reserve your spot and be the first to kick off your flow with Kare Yoga Online."
+        },
+        // Assessment + Warm
+        A_Warm: {
+            image: "product_warm.jpg",
+            buttonClass: "btn-warm",
+            buttonText: "Learn More",
+            headline: "Find Your Perfect Balance — Meditation Yoga Online with Kare Yoga",
+            lead: "Take a moment to reflect. Our step-by-step Meditation Yoga program helps you explore which practice best fits your body, pace, and goals — guided by experienced teachers who care about your growth.",
+            bullets: [
+                "Gentle, clear instructions for every level",
+                "Mindful approach to breathing and posture",
+                "Personalized feedback to refine your technique",
+                "Flexible schedules to fit your lifestyle"
+            ],
+            closing1: "We’re preparing a free introduction session for new members interested in mindful practice.",
+            closing2: "Enter your email to receive detailed course information and choose the plan that fits you best."
+        },
+        // Assessment + Cold
+        A_Cold: {
+            image: "product_cold.jpg",
+            buttonClass: "btn-cold",
+            buttonText: "Learn More",
+            headline: "Find Your Perfect Balance — Meditation Yoga Online with Kare Yoga",
+            lead: "Take a moment to reflect. Our step-by-step Meditation Yoga program helps you explore which practice best fits your body, pace, and goals — guided by experienced teachers who care about your growth.",
+            bullets: [
+                "Gentle, clear instructions for every level",
+                "Mindful approach to breathing and posture",
+                "Personalized feedback to refine your technique",
+                "Flexible schedules to fit your lifestyle"
+            ],
+            closing1: "We’re preparing a free introduction session for new members interested in mindful practice.",
+            closing2: "Enter your email to receive detailed course information and choose the plan that fits you best."
+        }
+    };
 
     let startTime = Date.now();
 
@@ -239,17 +317,62 @@
         const emailInput = document.getElementById("email-input");
         const emailError = document.getElementById("email-error");
 
+        const heroImage = document.getElementById("heroImage");
+        const headlineEl = document.getElementById("headline");
+        const leadEl = document.getElementById("lead");
+        const bulletList = document.getElementById("bulletList");
+        const closing1El = document.getElementById("closing1");
+        const closing2El = document.getElementById("closing2");
+        const ctaButton = document.getElementById("ctaButton");
+
+        if (!form) {
+            console.error("没有找到表单 #visible-form");
+            return;
+        }
+
+        // 1）确定实验条件：URL 有 cond 且有效就用，否则随机一个
+        const params = new URLSearchParams(window.location.search);
+        let cond = params.get("cond");
+        if (!cond || !(cond in CONDITION_CONFIG)) {
+            const keys = Object.keys(CONDITION_CONFIG);
+            cond = keys[Math.floor(Math.random() * keys.length)];
+            // 如需在地址栏反映随机结果，可以取消下面这行注释
+            // history.replaceState(null, "", "?cond=" + cond);
+        }
+        const config = CONDITION_CONFIG[cond];
+        conditionField.value = cond;
+
+        // 2）根据条件更新页面内容
+        heroImage.src = config.image;
+        heroImage.alt = cond;
+
+        headlineEl.textContent = config.headline;
+        leadEl.innerHTML = config.lead;
+
+        bulletList.innerHTML = "";
+        config.bullets.forEach((txt) => {
+            const li = document.createElement("li");
+            li.textContent = txt;
+            bulletList.appendChild(li);
+        });
+
+        closing1El.textContent = config.closing1;
+        closing2El.textContent = config.closing2;
+
+        ctaButton.textContent = config.buttonText;
+        ctaButton.classList.remove("btn-warm", "btn-cold");
+        ctaButton.classList.add(config.buttonClass);
+
+        // 3）生成 subject_id
         const subjectId = generateSubjectId();
         subjectField.value = subjectId;
 
-        const params = new URLSearchParams(window.location.search);
-        const cond = params.get("cond") || "unknown";
-        conditionField.value = cond;
-
+        // 4）邮箱输入事件
         emailInput.addEventListener("input", () => {
             emailError.textContent = "";
         });
 
+        // 5）提交事件
         form.addEventListener("submit", function (event) {
             event.preventDefault();
 
@@ -257,8 +380,7 @@
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailPattern.test(emailValue)) {
-                emailError.textContent =
-                    "请输入有效的邮箱地址（Please enter a valid email address）";
+                emailError.textContent = "请输入有效的邮箱地址";
                 emailInput.focus();
                 return;
             }
@@ -281,13 +403,20 @@
                 method: "POST",
                 body: body
             })
-                .then(() => {
+                .then(async (response) => {
+                    const text = await response.text();
+                    console.log("Apps Script 响应：", response.status, text);
+
+                    if (!response.ok) {
+                        throw new Error("HTTP " + response.status + ": " + text);
+                    }
+
                     formSection.style.display = "none";
                     successSection.style.display = "block";
                 })
                 .catch((error) => {
-                    console.error(error);
-                    alert("提交失败，请稍后再试");
+                    console.error("提交出错：", error);
+                    alert("提交失败：" + error.message);
                 });
         });
     });
