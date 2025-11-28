@@ -12,15 +12,18 @@
             background: linear-gradient(135deg, #f5f6fa, #eef3ff);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
             color: #1a1a1a;
+            overflow-x: hidden; /* 避免缩放后出现横向滚动条 */
         }
 
         .page-shell {
             padding: 20px 12px 40px;
         }
 
+        /* 主卡片容器：加了 id="landing-card" 的就是它 */
         .wrapper {
-            width: clamp(880px, 70vw, 1320px);
+            width: clamp(880px, 70vw, 1320px); /* 自适应宽度，上下限控制 */
             margin: 24px auto 40px;
+
             background: #ffffff;
             border-radius: 18px;
             overflow: hidden;
@@ -223,7 +226,7 @@
             40% { transform: translateY(-4px); opacity: 1; }
         }
 
-        /* 大屏：保持 960px 宽度，只放大字号，让比例不变但更易读 */
+        /* 大屏字体略放大，但保持比例 */
         @media (min-width: 1200px) {
             h1 {
                 font-size: 22px;
@@ -260,6 +263,7 @@
             }
         }
 
+        /* 手机端：全宽展示 */
         @media (max-width: 768px) {
             body {
                 background: #ffffff;
@@ -311,12 +315,31 @@
             line-height: 1.6;
             margin-bottom: 6px;
         }
+
+        /* ====== 大屏缩放：让 24/27/32 寸上看起来接近 125% 效果 ====== */
+        #landing-card {
+            transform-origin: top center;
+        }
+
+        @media (min-width: 1440px) {
+            #landing-card {
+                transform: scale(1.08);
+            }
+        }
+
+        @media (min-width: 1920px) {
+            #landing-card {
+                transform: scale(1.18);
+            }
+        }
+        /* ============================================================ */
     </style>
 </head>
 
 <body>
 <div class="page-shell">
-    <div class="wrapper">
+    <!-- 给主卡片加上 id="landing-card" -->
+    <div class="wrapper" id="landing-card">
         <div class="left">
             <img id="heroImage" src="warm.png" alt="Kare Yoga program" />
         </div>
@@ -379,9 +402,8 @@
 </div>
 
 <script>
-    // ======= 在这里填入你的 Apps Script Web App URL（以 /exec 结尾） =======
+    // 在这里填入你的 Apps Script Web App URL（以 /exec 结尾）
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
-    // ===============================================================
 
     const CONDITION_CONFIG = {
         L_Warm: {
@@ -630,4 +652,3 @@
 
 </body>
 </html>
-
