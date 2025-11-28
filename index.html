@@ -19,7 +19,7 @@
         }
 
         .wrapper {
-            max-width: 960px;
+            max-width: 960px;          /* 恢复原来的卡片宽度比例 */
             margin: 0 auto;
             background: #ffffff;
             border-radius: 18px;
@@ -37,7 +37,7 @@
         .left img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 桌面端铺满区域 */
+            object-fit: cover;
             display: block;
         }
 
@@ -195,7 +195,7 @@
         }
 
         .loading-indicator {
-            display: none; /* 默认不显示 */
+            display: none;
             margin-top: 8px;
             align-items: center;
             gap: 8px;
@@ -204,7 +204,7 @@
         }
 
         .loading-indicator.active {
-            display: flex; /* 提交时显示 */
+            display: flex;
         }
 
         .dot {
@@ -223,11 +223,8 @@
             40% { transform: translateY(-4px); opacity: 1; }
         }
 
-        /* 大屏优化：更宽一点 & 字号略大 */
+        /* 大屏：保持 960px 宽度，只放大字号，让比例不变但更易读 */
         @media (min-width: 1200px) {
-            .wrapper {
-                max-width: 1120px;
-            }
             h1 {
                 font-size: 22px;
             }
@@ -237,12 +234,15 @@
             .email-label {
                 font-size: 15px;
             }
+            .success-card h2 {
+                font-size: 20px;
+            }
+            .success-card p {
+                font-size: 15px;
+            }
         }
 
         @media (min-width: 1536px) {
-            .wrapper {
-                max-width: 1280px;
-            }
             h1 {
                 font-size: 24px;
             }
@@ -252,10 +252,15 @@
             .email-label {
                 font-size: 16px;
             }
+            .success-card h2 {
+                font-size: 22px;
+            }
+            .success-card p {
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 768px) {
-            /* 手机端：上图下文 & 去掉大卡片边框感 */
             body {
                 background: #ffffff;
             }
@@ -281,6 +286,12 @@
             button {
                 width: 100%;
             }
+            .success-card h2 {
+                font-size: 18px;
+            }
+            .success-card p {
+                font-size: 14px;
+            }
         }
 
         .success-card {
@@ -291,6 +302,7 @@
         .success-card h2 {
             font-size: 18px;
             margin-bottom: 10px;
+            font-weight: 600;
         }
 
         .success-card p {
@@ -370,7 +382,6 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
     // ===============================================================
 
-    // 四个条件：区分桌面图片 & 手机图片
     const CONDITION_CONFIG = {
         L_Warm: {
             desktopImage: "warm.png",
@@ -439,6 +450,8 @@
     };
 
     let startTime = Date.now();
+    let hasSubmitted = false;
+    let hasLoggedSession = false;
 
     function generateSubjectId() {
         return (
@@ -463,12 +476,13 @@
         };
     }
 
-    function sendToSheet(payload) {
+    function sendToSheet(payload, options = {}) {
         const body = new URLSearchParams(payload);
         return fetch(SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
-            body: body
+            body,
+            keepalive: options.keepalive === true
         });
     }
 
@@ -497,19 +511,19 @@
             return;
         }
 
-        // 1. 决定条件：URL ?cond=xxx，否则随机一个
+        // 1. 条件分配
         const params = new URLSearchParams(window.location.search);
         let cond = params.get("cond");
         if (!cond || !(cond in CONDITION_CONFIG)) {
             const keys = Object.keys(CONDITION_CONFIG);
             cond = keys[Math.floor(Math.random() * keys.length)];
-            // 如需把随机结果写回地址栏，可取消下一行注释：
+            // 如需把随机结果写回地址栏，可取消下面这一行注释：
             // history.replaceState(null, "", "?cond=" + cond);
         }
         const config = CONDITION_CONFIG[cond];
         conditionField.value = cond;
 
-        // 2. 根据设备选择图片
+        // 2. 图片选择
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
         const imgSrc = isMobile ? config.mobileImage : config.desktopImage;
         heroImage.src = imgSrc;
@@ -518,14 +532,12 @@
         // 3. 文案填充
         headlineEl.textContent = config.headline;
         leadEl.innerHTML = config.lead;
-
         bulletList.innerHTML = "";
         config.bullets.forEach((txt) => {
             const li = document.createElement("li");
             li.textContent = txt;
             bulletList.appendChild(li);
         });
-
         closing1El.textContent = config.closing1;
         closing2El.textContent = config.closing2;
 
@@ -533,11 +545,10 @@
         ctaButton.classList.remove("btn-warm", "btn-cold");
         ctaButton.classList.add(config.buttonClass);
 
-        // 4. subject_id
+        // 4. subject_id + 环境信息
         const subjectId = generateSubjectId();
         subjectField.value = subjectId;
 
-        // 公共环境信息（view / submit 都会用）
         const envInfo = collectEnvInfo();
         const commonPayload = {
             subject_id: subjectId,
@@ -547,26 +558,34 @@
             ...envInfo
         };
 
-        // 5. 记录一次「view」事件（只访问、不提交也会被记录）
-        sendToSheet({
-            event_type: "view",
-            email: "",
-            stay_seconds: "",
-            ...commonPayload
-        }).catch((err) => {
-            console.log("view event error:", err);
-        });
+        function logSession(eventType, emailValue, options = {}) {
+            if (hasLoggedSession) return;
+            hasLoggedSession = true;
 
-        let isSubmitting = false;
+            const staySeconds = Math.round((Date.now() - startTime) / 1000);
+            stayField.value = staySeconds;
 
+            const payload = {
+                event_type: eventType,
+                email: emailValue || "",
+                stay_seconds: String(staySeconds),
+                ...commonPayload
+            };
+
+            sendToSheet(payload, options).catch((err) => {
+                console.error("logSession error:", err);
+            });
+        }
+
+        // 输入时清除错误提示
         emailInput.addEventListener("input", () => {
             emailError.textContent = "";
         });
 
-        // 6. 提交事件（submit）
+        // 提交：事件类型 submit
         form.addEventListener("submit", function (event) {
             event.preventDefault();
-            if (isSubmitting) return;
+            if (hasSubmitted) return;
 
             const emailValue = emailInput.value.trim();
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -577,35 +596,33 @@
                 return;
             }
 
-            const staySeconds = Math.round((Date.now() - startTime) / 1000);
-            stayField.value = staySeconds;
-
-            const payload = {
-                event_type: "submit",
-                email: emailValue,
-                stay_seconds: String(staySeconds),
-                ...commonPayload
-            };
-
-            isSubmitting = true;
+            hasSubmitted = true;
             ctaButton.disabled = true;
             loadingIndicator.classList.add("active");
 
-            sendToSheet(payload)
-                .then(() => {
-                    // 不依赖返回状态，只要请求发出就展示感谢页
-                    formSection.style.display = "none";
-                    successSection.style.display = "block";
-                })
-                .catch((error) => {
-                    console.error("submit error:", error);
-                    // 即使前端认为失败，也展示感谢页，避免打扰受试者
-                    formSection.style.display = "none";
-                    successSection.style.display = "block";
-                })
-                .finally(() => {
-                    loadingIndicator.classList.remove("active");
-                });
+            logSession("submit", emailValue, { keepalive: false });
+
+            // 直接展示成功卡片，不等网络返回
+            formSection.style.display = "none";
+            successSection.style.display = "block";
+            loadingIndicator.classList.remove("active");
+        });
+
+        // 未提交就离开页面：事件类型 view_only
+        function handlePossibleLeave() {
+            if (!hasSubmitted) {
+                logSession("view_only", "", { keepalive: true });
+            }
+        }
+
+        document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "hidden") {
+                handlePossibleLeave();
+            }
+        });
+
+        window.addEventListener("pagehide", function () {
+            handlePossibleLeave();
         });
     });
 </script>
