@@ -1,868 +1,650 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
-  <meta charset="UTF-8" />
-  <title>Kare Yoga Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg-page: #eef3ff;
-      --card-radius: 28px;
-      --card-shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
-      --text-main: #111827;
-      --text-muted: #4b5563;
-      --pill-bg: rgba(148, 163, 184, 0.15);
-      --pill-text: #4b5563;
-      --border-subtle: rgba(148, 163, 184, 0.4);
-      --error: #e11d48;
-
-      --warm-primary: #ff8a26;
-      --warm-button: #ff8a26;
-      --warm-button-shadow: 0 16px 36px rgba(255, 138, 38, 0.48);
-
-      --cold-primary: #2a96ff;
-      --cold-button: #2a60ff;
-      --cold-button-shadow: 0 16px 36px rgba(42, 96, 255, 0.48);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #f9fbff 0, var(--bg-page) 45%, #e0ebff 100%);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-        sans-serif;
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    main.page {
-      width: 100%;
-      padding: 24px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card {
-      width: min(1120px, 100%);
-      max-width: min(1120px, 100% - 32px);
-      min-height: 520px;
-      background: #ffffff;
-      border-radius: var(--card-radius);
-      box-shadow: var(--card-shadow);
-      display: flex;
-      overflow: hidden;
-      position: relative;
-    }
-
-    @media (min-width: 1440px) {
-      .card {
-        transform: scale(1.08);
-        transform-origin: center top;
-      }
-    }
-
-    @media (min-width: 1680px) {
-      .card {
-        transform: scale(1.18);
-      }
-    }
-
-    @media (min-width: 1920px) {
-      .card {
-        transform: scale(1.26);
-      }
-    }
-
-    .hero {
-      flex: 0 0 40%;
-      position: relative;
-      background: #111827;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .hero picture,
-    .hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .content {
-      flex: 0 0 60%;
-      padding: 40px 48px 40px 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .eyebrow-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #6b7280;
-    }
-
-    .pill {
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      border: 1px solid var(--border-subtle);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: none;
-      color: var(--pill-text);
-      white-space: nowrap;
-    }
-
-    h1 {
-      font-size: 26px;
-      line-height: 1.3;
-      margin: 4px 0 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .lead {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text-muted);
-      margin: 0;
-    }
-
-    .benefit-list {
-      margin: 4px 0 0;
-      padding-left: 20px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-muted);
-    }
-
-    .benefit-list li + li {
-      margin-top: 4px;
-    }
-
-    .closing {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-muted);
-      margin: 0;
-    }
-
-    .closing + .closing {
-      margin-top: 4px;
-    }
-
-    form {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .field-label {
-      font-size: 13px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .required {
-      color: var(--error);
-    }
-
-    input[type="email"] {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      outline: none;
-      transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
-    }
-
-    input[type="email"]:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.3);
-      background-color: #f9fafb;
-    }
-
-    .error-text {
-      margin: 0 2px;
-      font-size: 12px;
-      color: var(--error);
-      visibility: hidden;
-    }
-
-    .error-text.is-visible {
-      visibility: visible;
-    }
-
-    button[type="submit"] {
-      margin-top: 4px;
-      border: none;
-      outline: none;
-      border-radius: 999px;
-      padding: 11px 24px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #ffffff;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: var(--cold-button);
-      box-shadow: var(--cold-button-shadow);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease, background 0.12s ease;
-    }
-
-    button[type="submit"]:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.02);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
-    }
-
-    button[type="submit"]:active {
-      transform: translateY(0);
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
-    }
-
-    button[type="submit"].is-submitting {
-      cursor: default;
-      opacity: 0.9;
-      transform: none;
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
-    }
-
-    .btn-dots {
-      display: none;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .btn-dots span {
-      width: 4px;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
-      animation: pulse 1s infinite ease-in-out;
-    }
-
-    .btn-dots span:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .btn-dots span:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    @keyframes pulse {
-      0%,
-      100% {
-        transform: translateY(0);
-        opacity: 0.5;
-      }
-      50% {
-        transform: translateY(-2px);
-        opacity: 1;
-      }
-    }
-
-    button[type="submit"].is-submitting .btn-dots {
-      display: inline-flex;
-    }
-
-    button[type="submit"].is-submitting .btn-label {
-      opacity: 0.7;
-    }
-
-    .privacy-note {
-      margin: 4px 0 0;
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.12), rgba(15, 23, 42, 0.55));
-      z-index: 40;
-    }
-
-    .overlay.is-visible {
-      display: flex;
-    }
-
-    .success-card {
-      width: min(840px, 100%);
-      max-width: min(840px, 100% - 32px);
-      background: #ffffff;
-      border-radius: 24px;
-      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.6);
-      display: flex;
-      overflow: hidden;
-    }
-
-    .success-hero {
-      flex: 0 0 38%;
-      background: var(--cold-primary);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .success-hero::before {
-      content: "";
-      width: 70%;
-      height: 70%;
-      background: url("product_warm.jpg") center center / cover no-repeat;
-      opacity: 0.95;
-      border-radius: 999px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-    }
-
-    .success-copy {
-      flex: 0 0 62%;
-      padding: 32px 40px 32px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .success-copy h2 {
-      font-size: 22px;
-      margin: 0;
-      letter-spacing: -0.02em;
-    }
-
-    .success-copy p {
-      font-size: 14px;
-      margin: 0;
-      color: var(--text-muted);
-    }
-
-    .eyebrow-row.small {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-    }
-
-    @media (max-width: 900px) {
-      main.page {
-        padding: 16px;
-      }
-
-      .card {
-        flex-direction: column;
-        max-width: 520px;
-      }
-
-      .hero {
-        flex-basis: auto;
-        height: 220px;
-      }
-
-      .content {
-        padding: 24px 20px 24px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      .lead {
-        font-size: 14px;
-      }
-
-      .benefit-list {
-        font-size: 13px;
-      }
-
-      .success-card {
-        flex-direction: column;
-      }
-
-      .success-hero {
-        flex-basis: auto;
-        height: 160px;
-      }
-
-      .success-hero::before {
-        width: 58%;
-        height: 58%;
-      }
-
-      .success-copy {
-        padding: 24px 20px 24px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        border-radius: 0;
-        max-width: 100%;
-        min-height: 100vh;
-        box-shadow: none;
-      }
-
-      body {
-        align-items: stretch;
-      }
-
-      main.page {
-        padding: 0;
-      }
-
-      .hero {
-        height: 210px;
-      }
-
-      .content {
-        padding: 22px 18px 24px;
-      }
-
-      .success-card {
-        max-width: 480px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kare Yoga Online</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f6fa, #eef3ff);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .page-shell {
+            padding: 20px 12px 40px;
+        }
+
+        .wrapper {
+            width: clamp(880px, 70vw, 1320px);
+            margin: 24px auto 40px;
+
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
+            display: flex;
+            flex-direction: row;
+        }
+
+        .left {
+            flex: 1.15;
+            min-height: 360px;
+        }
+
+        .left img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .right {
+            flex: 1;
+            padding: 30px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .brand-name {
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            background: #f8fafc;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 14px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .lead {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        ul {
+            margin: 0 0 12px 18px;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        ul li {
+            margin-bottom: 4px;
+        }
+
+        .closing {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+
+        .email-label {
+            font-size: 14px;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        form {
+            margin-top: 0;
+        }
+
+        input[type="email"] {
+            padding: 8px 6px;
+            border-radius: 6px;
+            border: 1px solid #cbd5f1;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input[type="email"]:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.15);
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #d93025;
+            margin-top: 4px;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: #d93025;
+            margin-top: 2px;
+            min-height: 16px;
+        }
+
+        button {
+            margin-top: 14px;
+            padding: 10px;
+            font-size: 14px;
+            color: white;
+            border-radius: 999px;
+            cursor: pointer;
+            width: 180px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.18s ease, border-color 0.18s ease,
+                        transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .btn-warm {
+            background: #f97316;
+            border-color: #f97316;
+            box-shadow: 0 8px 14px rgba(248, 113, 22, 0.25);
+        }
+        .btn-warm:hover:not(:disabled) {
+            background: #ea580c;
+            border-color: #ea580c;
+        }
+
+        .btn-cold {
+            background: #2563eb;
+            border-color: #2563eb;
+            box-shadow: 0 8px 14px rgba(37, 99, 235, 0.25);
+        }
+        .btn-cold:hover:not(:disabled) {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .loading-indicator {
+            display: none;
+            margin-top: 8px;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #94a3b8;
+            animation: bounce 0.9s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.12s; }
+        .dot:nth-child(3) { animation-delay: 0.24s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        @media (min-width: 1200px) {
+            h1 {
+                font-size: 22px;
+            }
+            .lead,
+            ul,
+            .closing,
+            .email-label {
+                font-size: 15px;
+            }
+            .success-card h2 {
+                font-size: 20px;
+            }
+            .success-card p {
+                font-size: 15px;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            h1 {
+                font-size: 24px;
+            }
+            .lead,
+            ul,
+            .closing,
+            .email-label {
+                font-size: 16px;
+            }
+            .success-card h2 {
+                font-size: 22px;
+            }
+            .success-card p {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background: #ffffff;
+            }
+            .page-shell {
+                padding: 0;
+            }
+            .wrapper {
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                flex-direction: column;
+            }
+            .left {
+                min-height: auto;
+            }
+            .left img {
+                height: auto;
+                max-height: 260px;
+                object-fit: contain;
+            }
+            .right {
+                padding: 22px 18px 24px;
+            }
+            button {
+                width: 100%;
+            }
+            .success-card h2 {
+                font-size: 18px;
+            }
+            .success-card p {
+                font-size: 14px;
+            }
+        }
+
+        .success-card {
+            display: none;
+            text-align: left;
+        }
+
+        .success-card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .success-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+
+        #landing-card {
+            transform-origin: top center;
+        }
+
+        @media (min-width: 1440px) {
+            #landing-card {
+                transform: scale(1.08);
+            }
+        }
+
+        @media (min-width: 1920px) {
+            #landing-card {
+                transform: scale(1.18);
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <main class="page">
-    <section class="card" id="card">
-      <div class="hero" id="hero">
-        <picture>
-          <source id="hero-desktop" media="(min-width: 768px)" srcset="warm.png" />
-          <img
-            id="hero-mobile"
-            src="product_warm.jpg"
-            alt="Kare Yoga program"
-            loading="lazy"
-          />
-        </picture>
-      </div>
-
-      <div class="content">
-        <header class="eyebrow-row">
-          <span class="brand">KARE YOGA ONLINE</span>
-          <span class="pill" id="session-tag">Online introductory session</span>
-        </header>
-
-        <h1 id="headline">
-          Find Your Best Fit — Meditation Yoga Online with Kare Yoga
-        </h1>
-
-        <p class="lead" id="lead">
-          Before beginning any practice, it is important to carefully consider which approach
-          aligns most accurately with your needs. Our Meditation Yoga program helps you evaluate
-          different methods and identify the option that best suits you—supported by experienced
-          instructors who offer clear guidance and thoughtful, reflective feedback.
-        </p>
-
-        <ul class="benefit-list" id="benefit-list">
-          <!-- bullets injected -->
-        </ul>
-
-        <p class="closing" id="closing1"></p>
-        <p class="closing" id="closing2"></p>
-
-        <form id="email-form" novalidate>
-          <label class="field-label" for="email-input">
-            Email<span class="required">*</span>
-          </label>
-          <input
-            type="email"
-            id="email-input"
-            name="email"
-            autocomplete="email"
-            inputmode="email"
-          />
-          <p class="error-text" id="error-text">Please complete this required field.</p>
-
-          <button type="submit" id="submit-btn">
-            <span class="btn-label" id="submit-label">Learn More</span>
-            <span class="btn-dots" id="submit-dots">
-              <span></span><span></span><span></span>
-            </span>
-          </button>
-        </form>
-
-        <p class="privacy-note">
-          We’ll only use your email for course-related updates. You can opt out at any time.
-        </p>
-      </div>
-    </section>
-
-    <section class="overlay" id="success-overlay" aria-hidden="true">
-      <div class="success-card">
-        <div class="success-hero" id="success-hero"></div>
-        <div class="success-copy">
-          <div class="eyebrow-row small">
-            <span>KARE YOGA ONLINE</span>
-          </div>
-          <h2 id="success-title">Thank you for joining Kare Yoga</h2>
-          <p id="success-body">
-            Your email has been received. We’ll contact you with more details about the upcoming
-            online session.
-          </p>
+<div class="page-shell">
+    <div class="wrapper" id="landing-card">
+        <div class="left">
+            <img id="heroImage" src="warm.png" alt="Kare Yoga program" />
         </div>
-      </div>
-    </section>
-  </main>
 
-  <script>
-    // ====== CONFIG ======
-    const SCRIPT_URL =
- "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec"; // Apps Script 部署地址（Google 表格）
+        <div class="right">
+            <div class="brand-row">
+                <div class="brand-name">Kare Yoga Online</div>
+                <div class="badge">Online introductory session</div>
+            </div>
 
-    const CONDITIONS = ["L_Warm", "L_Cold", "A_Warm", "A_Cold"];
+            <div id="form-section">
+                <h1 id="headline"></h1>
 
-    // 新文案：Assessment & Locomotion
-    const COPY = {
-      A_Warm: {
-        theme: "assessment",
-        heroDesktop: "warm.png",
-        heroMobile: "product_warm.jpg",
-        heroColor: "var(--warm-primary)",
-        buttonColor: "var(--warm-button)",
-        buttonShadow: "var(--warm-button-shadow)",
-        successHeroColor: "var(--warm-primary)",
-        headline: "Find Your Best Fit — Meditation Yoga Online with Kare Yoga",
-        lead:
-          "Before beginning any practice, it is important to carefully consider which approach aligns most accurately with your needs. Our Meditation Yoga program helps you evaluate different methods and identify the option that best suits you—supported by experienced instructors who offer clear guidance and thoughtful, reflective feedback.",
-        bullets: [
-          "Clear instructions to evaluate each posture accurately",
-          "Mindful attention to breathing, alignment, and sensations",
-          "Personalized feedback to refine your technique",
-          "Flexible schedules to compare and choose options",
-        ],
-        closing1:
-          "We are currently in the process of developing this online meditation yoga course. If you would like to assess the details of this course and are interested in receiving updates, you may voluntarily provide your email address.",
-        closing2:
-          "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time.",
-        buttonText: "Learn More",
-      },
-      A_Cold: {
-        theme: "assessment",
-        heroDesktop: "cold.png",
-        heroMobile: "product_cold.jpg",
-        heroColor: "var(--cold-primary)",
-        buttonColor: "var(--cold-button)",
-        buttonShadow: "var(--cold-button-shadow)",
-        successHeroColor: "var(--cold-primary)",
-        headline: "Find Your Best Fit — Meditation Yoga Online with Kare Yoga",
-        lead:
-          "Before beginning any practice, it is important to carefully consider which approach aligns most accurately with your needs. Our Meditation Yoga program helps you evaluate different methods and identify the option that best suits you—supported by experienced instructors who offer clear guidance and thoughtful, reflective feedback.",
-        bullets: [
-          "Clear instructions to evaluate each posture accurately",
-          "Mindful attention to breathing, alignment, and sensations",
-          "Personalized feedback to refine your technique",
-          "Flexible schedules to compare and choose options",
-        ],
-        closing1:
-          "We are currently in the process of developing this online meditation yoga course. If you would like to assess the details of this course and are interested in receiving updates, you may voluntarily provide your email address.",
-        closing2:
-          "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time.",
-        buttonText: "Learn More",
-      },
-      L_Warm: {
-        theme: "locomotion",
-        heroDesktop: "warm.png",
-        heroMobile: "product_warm.jpg",
-        heroColor: "var(--warm-primary)",
-        buttonColor: "var(--warm-button)",
-        buttonShadow: "var(--warm-button-shadow)",
-        successHeroColor: "var(--warm-primary)",
-        headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
-        lead:
-          "Your journey to greater strength and energy begins now, encouraging you to take action and keep moving forward. Our Power Yoga program helps you build momentum and achieve steady progress with each session—supported by live instructors who keep you active, engaged, and continuously advancing.",
-        bullets: [
-          "Fast-paced classes that keep you moving continuously",
-          "Energizing flows that activate body and mind",
-          "Steady gains in stamina, flexibility, and mobility",
-          "Progress tools to stay motivated and advancing",
-        ],
-        closing1:
-          "We are currently in the process of developing this online power yoga course. If you are motivated to energize yourself with this course and are interested in receiving updates, you may voluntarily provide your email address.",
-        closing2:
-          "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time.",
-        buttonText: "Get Started Now",
-      },
-      L_Cold: {
-        theme: "locomotion",
-        heroDesktop: "cold.png",
-        heroMobile: "product_cold.jpg",
-        heroColor: "var(--cold-primary)",
-        buttonColor: "var(--cold-button)",
-        buttonShadow: "var(--cold-button-shadow)",
-        successHeroColor: "var(--cold-primary)",
-        headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
-        lead:
-          "Your journey to greater strength and energy begins now, encouraging you to take action and keep moving forward. Our Power Yoga program helps you build momentum and achieve steady progress with each session—supported by live instructors who keep you active, engaged, and continuously advancing.",
-        bullets: [
-          "Fast-paced classes that keep you moving continuously",
-          "Energizing flows that activate body and mind",
-          "Steady gains in stamina, flexibility, and mobility",
-          "Progress tools to stay motivated and advancing",
-        ],
-        closing1:
-          "We are currently in the process of developing this online power yoga course. If you are motivated to energize yourself with this course and are interested in receiving updates, you may voluntarily provide your email address.",
-        closing2:
-          "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time.",
-        buttonText: "Get Started Now",
-      },
+                <p class="lead" id="lead"></p>
+
+                <ul id="bulletList"></ul>
+
+                <p class="closing" id="closing1"></p>
+                <p class="closing" id="closing2"></p>
+
+                <label class="email-label" for="email-input">
+                    Email<span style="color:#d93025">*</span>
+                </label>
+
+                <form id="visible-form">
+                    <input type="hidden" id="stayTimeField" name="stay_seconds" />
+                    <input type="hidden" id="subjectIdField" name="subject_id" />
+                    <input type="hidden" id="conditionField" name="condition" />
+
+                    <input
+                        id="email-input"
+                        type="email"
+                        name="email"
+                        autocomplete="email"
+                        required
+                    />
+                    <div class="helper-text">Please complete this required field.</div>
+                    <div id="email-error" class="error-message"></div>
+
+                    <button id="ctaButton" type="submit">
+                        <span id="ctaText">Submit</span>
+                    </button>
+
+                    <div id="loading-indicator" class="loading-indicator" aria-hidden="true">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <span>Submitting…</span>
+                    </div>
+                </form>
+            </div>
+
+            <div id="success-section" class="success-card">
+                <h2>Thank you for your interest in Kare Yoga</h2>
+                <p>Your email has been received.</p>
+                <p>
+                   We’ll send you one follow-up email with more details once this online program is ready to begin.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 填入 Apps Script Web App URL（Google 表格）
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkQOgXH7c8A5J-3waQGEE-viwqyTtUqY9gRRKXx3kw4SnwFp-qP43UgA77oQipSNe/exec";
+
+    const CONDITION_CONFIG = {
+        L_Warm: {
+            desktopImage: "warm.png",
+            mobileImage: "product_warm.jpg",
+            buttonClass: "btn-warm",
+            buttonText: "Get Started Now",
+            headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
+            lead: "Your journey to greater strength and energy begins now, encouraging you to take action and keep moving forward. Our Power Yoga program helps you build momentum and achieve steady progress with each session—supported by live instructors who keep you active, engaged, and continuously advancing.",
+            headline: "What You Can Expect:",
+            bullets: [
+                "Fast-paced classes that keep you moving continuously",
+                "Energizing flows that activate body and mind",
+                "Steady gains in stamina, flexibility, and mobility",
+                "Progress tools to stay motivated and advancing"
+            ],
+            closing1: "We are currently in the process of developing this online power yoga course. If you are motivated to energize yourself with this course and are interested in receiving updates, you may voluntarily provide your email address.",
+            closing2: "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time."
+        },
+        L_Cold: {
+            desktopImage: "cold.png",
+            mobileImage: "product_cold.jpg",
+            buttonClass: "btn-cold",
+            buttonText: "Get Started Now",
+            headline: "Start Your Flow Today — Power Yoga Online with Kare Yoga",
+            lead: "Your journey to greater strength and energy begins now, encouraging you to take action and keep moving forward. Our Power Yoga program helps you build momentum and achieve steady progress with each session—supported by live instructors who keep you active, engaged, and continuously advancing.",
+            headline: "What You Can Expect:",
+            bullets: [
+                "Fast-paced classes that keep you moving continuously",
+                "Energizing flows that activate body and mind",
+                "Steady gains in stamina, flexibility, and mobility",
+                "Progress tools to stay motivated and advancing"
+            ],
+            closing1: "We are currently in the process of developing this online power yoga course. If you are motivated to energize yourself with this course and are interested in receiving updates, you may voluntarily provide your email address.",
+            closing2: "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time."
+        },
+        A_Warm: {
+            desktopImage: "warm.png",
+            mobileImage: "product_warm.jpg",
+            buttonClass: "btn-warm",
+            buttonText: "Learn More",
+            headline: "Find Your Best Fit — Meditation Yoga Online with Kare Yoga",
+            lead: "Before beginning any practice, it is important to carefully consider which approach aligns most accurately with your needs. Our Meditation Yoga program helps you evaluate different methods and identify the option that best suits you—supported by experienced instructors who offer clear guidance and thoughtful, reflective feedback.",
+            headline: "What You Can Expect:",
+            bullets: [
+                "Clear instructions to evaluate each posture accurately",
+                "Mindful attention to breathing, alignment, and sensations",
+                "Personalized feedback to refine your technique",
+                "Flexible schedules to compare and choose options"
+            ],
+            closing1: "We are currently in the process of developing this online meditation yoga course. If you would like to assess the details of this course and are interested in receiving updates, you may voluntarily provide your email address.",
+            closing2: "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time."
+        },
+        A_Cold: {
+            desktopImage: "cold.png",
+            mobileImage: "product_cold.jpg",
+            buttonClass: "btn-cold",
+            buttonText: "Learn More",
+              headline: "Find Your Best Fit — Meditation Yoga Online with Kare Yoga",
+            lead: "Before beginning any practice, it is important to carefully consider which approach aligns most accurately with your needs. Our Meditation Yoga program helps you evaluate different methods and identify the option that best suits you—supported by experienced instructors who offer clear guidance and thoughtful, reflective feedback.",
+            headline: "What You Can Expect:",
+            bullets: [
+                "Clear instructions to evaluate each posture accurately",
+                "Mindful attention to breathing, alignment, and sensations",
+                "Personalized feedback to refine your technique",
+                "Flexible schedules to compare and choose options"
+            ],
+            closing1: "We are currently in the process of developing this online meditation yoga course. If you would like to assess the details of this course and are interested in receiving updates, you may voluntarily provide your email address.",
+            closing2: "Your contact information will be used solely for course-related updates, and you may withdraw your interest at any time."
+        }
     };
 
-    // ====== HELPERS ======
+    let startTime = Date.now();
+    let hasSubmitted = false;
+    let hasLoggedViewOnly = false;
+    let hasLoggedSubmit = false;
 
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
+    function generateSubjectId() {
+        return (
+            Date.now().toString(36) +
+            Math.random().toString(36).slice(2, 8)
+        );
     }
 
-    function randomCondition() {
-      const idx = Math.floor(Math.random() * CONDITIONS.length);
-      return CONDITIONS[idx];
-    }
+    function collectEnvInfo() {
+        const scr = window.screen || {};
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    function ensureSubjectId() {
-      const key = "kareyoga_subject_id";
-      let existing = window.localStorage.getItem(key);
-      if (!existing) {
-        existing =
-          Math.random().toString(36).slice(2, 8) +
-          Math.random().toString(36).slice(2, 8);
-        window.localStorage.setItem(key, existing);
-      }
-      return existing;
-    }
-
-    function getDeviceType() {
-      const ua = navigator.userAgent || "";
-      if (/mobile/i.test(ua)) return "mobile";
-      if (/tablet|ipad/i.test(ua)) return "tablet";
-      return "desktop";
-    }
-
-    function collectContextPayload() {
-      const language =
-        (navigator.languages && navigator.languages[0]) ||
-        navigator.language ||
-        "";
-      const timezoneOffset = new Date().getTimezoneOffset(); // minutes
-      const screenWidth = window.screen && window.screen.width;
-      const screenHeight = window.screen && window.screen.height;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const devicePixelRatio = window.devicePixelRatio || 1;
-
-      return {
-        device_type: getDeviceType(),
-        language,
-        timezone_offset: timezoneOffset,
-        screen_width: screenWidth,
-        screen_height: screenHeight,
-        viewport_width: viewportWidth,
-        viewport_height: viewportHeight,
-        device_pixel_ratio: devicePixelRatio,
-      };
-    }
-
-    function sendEvent(payload) {
-      const body = new URLSearchParams(payload);
-
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(SCRIPT_URL, body);
-        return Promise.resolve(true);
-      }
-
-      return fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body,
-      })
-        .then(() => true)
-        .catch(() => false);
-    }
-
-    // ====== MAIN ======
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const hero = document.getElementById("hero");
-      const heroDesktop = document.getElementById("hero-desktop");
-      const heroMobile = document.getElementById("hero-mobile");
-
-      const headlineEl = document.getElementById("headline");
-      const leadEl = document.getElementById("lead");
-      const listEl = document.getElementById("benefit-list");
-      const closing1El = document.getElementById("closing1");
-      const closing2El = document.getElementById("closing2");
-
-      const emailForm = document.getElementById("email-form");
-      const emailInput = document.getElementById("email-input");
-      const errorText = document.getElementById("error-text");
-      const submitBtn = document.getElementById("submit-btn");
-      const submitLabel = document.getElementById("submit-label");
-
-      const overlay = document.getElementById("success-overlay");
-      const successHero = document.getElementById("success-hero");
-
-      // ---- condition selection ----
-      const urlCond = getQueryParam("cond");
-      const condition = CONDITIONS.includes(urlCond) ? urlCond : randomCondition();
-      const copy = COPY[condition];
-
-      window.__kareyogaCondition = condition;
-
-      // apply theme
-      hero.style.background = copy.heroColor;
-      heroDesktop.srcset = copy.heroDesktop;
-      heroMobile.src = copy.heroMobile;
-
-      successHero.style.background = copy.successHeroColor;
-      successHero.style.setProperty(
-        "--success-color",
-        copy.successHeroColor
-      );
-
-      submitBtn.style.background = copy.buttonColor;
-      submitBtn.style.boxShadow = copy.buttonShadow;
-
-      // text content
-      headlineEl.textContent = copy.headline;
-      leadEl.textContent = copy.lead;
-
-      listEl.innerHTML = "";
-      copy.bullets.forEach((b) => {
-        const li = document.createElement("li");
-        li.textContent = b;
-        listEl.appendChild(li);
-      });
-
-      closing1El.textContent = copy.closing1;
-      closing2El.textContent = copy.closing2;
-      submitLabel.textContent = copy.buttonText;
-
-      // ---- logging state ----
-      const subjectId = ensureSubjectId();
-      const sessionStart = Date.now();
-      let hasLoggedView = false;
-      let hasLoggedSubmit = false;
-      let isSubmitting = false;
-
-      function buildPayload(eventType, staySeconds, emailValue) {
-        const base = collectContextPayload();
         return {
-          timestamp: new Date().toISOString(),
-          event_type: eventType,
-          email: emailValue || "",
-          stay_seconds: staySeconds != null ? String(staySeconds) : "",
-          subject_id: subjectId,
-          condition: condition,
-          user_agent: navigator.userAgent || "",
-          referer: document.referrer || "",
-          device_type: base.device_type || "",
-          language: base.language || "",
-          timezone_offset: base.timezone_offset ?? "",
-          screen_width: base.screen_width ?? "",
-          screen_height: base.screen_height ?? "",
-          viewport_width: base.viewport_width ?? "",
-          viewport_height: base.viewport_height ?? "",
-          device_pixel_ratio: base.device_pixel_ratio ?? "",
+            screen_width: scr.width ? String(scr.width) : "",
+            screen_height: scr.height ? String(scr.height) : "",
+            viewport_width: String(window.innerWidth || ""),
+            viewport_height: String(window.innerHeight || ""),
+            device_pixel_ratio: String(window.devicePixelRatio || 1),
+            device_type: isMobile ? "mobile" : "desktop",
+            language: navigator.language || "",
+            timezone_offset: String(new Date().getTimezoneOffset())
         };
-      }
+    }
 
-      function getStaySeconds() {
-        const diffMs = Date.now() - sessionStart;
-        return Math.max(0, Math.round(diffMs / 1000));
-      }
-
-      function logViewIfNeeded() {
-        if (hasLoggedView || hasLoggedSubmit) return;
-        hasLoggedView = true;
-        const staySeconds = getStaySeconds();
-        const payload = buildPayload("view_only", staySeconds, "");
-        sendEvent(payload);
-      }
-
-      // log when用户离开 or tab 被隐藏
-      window.addEventListener("beforeunload", () => {
-        logViewIfNeeded();
-      });
-
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") {
-          logViewIfNeeded();
-        }
-      });
-
-      // ---- form / validation ----
-      function validateEmail(value) {
-        if (!value) return false;
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return pattern.test(value);
-      }
-
-      emailInput.addEventListener("input", () => {
-        errorText.classList.remove("is-visible");
-      });
-
-      emailForm.addEventListener("submit", (evt) => {
-        evt.preventDefault();
-        if (isSubmitting) return;
-
-        const emailValue = emailInput.value.trim();
-        if (!validateEmail(emailValue)) {
-          errorText.classList.add("is-visible");
-          emailInput.focus();
-          return;
-        }
-
-        errorText.classList.remove("is-visible");
-        isSubmitting = true;
-        hasLoggedSubmit = true;
-        hasLoggedView = true; // 避免再记一条 view_only
-
-        submitBtn.classList.add("is-submitting");
-
-        const staySeconds = getStaySeconds();
-        const payload = buildPayload("submit", staySeconds, emailValue);
-
-        sendEvent(payload).finally(() => {
-          overlay.classList.add("is-visible");
-          overlay.setAttribute("aria-hidden", "false");
-          isSubmitting = false;
-          submitBtn.classList.remove("is-submitting");
+    function sendToSheet(payload, options = {}) {
+        const body = new URLSearchParams(payload);
+        return fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body,
+            keepalive: options.keepalive === true
         });
-      });
+    }
+
+    function logSession(eventType, emailValue, options = {}) {
+        if (eventType === "view_only") {
+            if (hasLoggedViewOnly) return;
+            hasLoggedViewOnly = true;
+        } else if (eventType === "submit") {
+            if (hasLoggedSubmit) return;
+            hasLoggedSubmit = true;
+        }
+
+        const staySeconds = Math.round((Date.now() - startTime) / 1000);
+        const stayField = document.getElementById("stayTimeField");
+        stayField.value = staySeconds;
+
+        const payload = {
+            event_type: eventType,
+            email: emailValue || "",
+            stay_seconds: String(staySeconds),
+            ...window.__commonPayload
+        };
+
+        sendToSheet(payload, options).catch((err) => {
+            console.error("logSession error:", err);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("visible-form");
+        const stayField = document.getElementById("stayTimeField");
+        const subjectField = document.getElementById("subjectIdField");
+        const conditionField = document.getElementById("conditionField");
+        const formSection = document.getElementById("form-section");
+        const successSection = document.getElementById("success-section");
+        const emailInput = document.getElementById("email-input");
+        const emailError = document.getElementById("email-error");
+
+        const heroImage = document.getElementById("heroImage");
+        const headlineEl = document.getElementById("headline");
+        const leadEl = document.getElementById("lead");
+        const bulletList = document.getElementById("bulletList");
+        const closing1El = document.getElementById("closing1");
+        const closing2El = document.getElementById("closing2");
+        const ctaButton = document.getElementById("ctaButton");
+        const ctaText = document.getElementById("ctaText");
+        const loadingIndicator = document.getElementById("loading-indicator");
+
+        if (!form) {
+            console.error("没有找到表单 #visible-form");
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        let cond = params.get("cond");
+        if (!cond || !(cond in CONDITION_CONFIG)) {
+            const keys = Object.keys(CONDITION_CONFIG);
+            cond = keys[Math.floor(Math.random() * keys.length)];
+        }
+        const config = CONDITION_CONFIG[cond];
+        conditionField.value = cond;
+
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const imgSrc = isMobile ? config.mobileImage : config.desktopImage;
+        heroImage.src = imgSrc;
+        heroImage.alt = cond;
+
+        headlineEl.textContent = config.headline;
+        leadEl.innerHTML = config.lead;
+        bulletList.innerHTML = "";
+        config.bullets.forEach((txt) => {
+            const li = document.createElement("li");
+            li.textContent = txt;
+            bulletList.appendChild(li);
+        });
+        closing1El.textContent = config.closing1;
+        closing2El.textContent = config.closing2;
+
+        ctaText.textContent = config.buttonText;
+        ctaButton.classList.remove("btn-warm", "btn-cold");
+        ctaButton.classList.add(config.buttonClass);
+
+        const subjectId = generateSubjectId();
+        subjectField.value = subjectId;
+
+        const envInfo = collectEnvInfo();
+        const commonPayload = {
+            subject_id: subjectId,
+            condition: cond,
+            user_agent: navigator.userAgent || "",
+            referer: document.referrer || "",
+            ...envInfo
+        };
+        window.__commonPayload = commonPayload;
+
+        emailInput.addEventListener("input", () => {
+            emailError.textContent = "";
+        });
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (hasSubmitted) return;
+
+            const emailValue = emailInput.value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(emailValue)) {
+                emailError.textContent = "请输入有效的邮箱地址";
+                emailInput.focus();
+                return;
+            }
+
+            hasSubmitted = true;
+            ctaButton.disabled = true;
+            loadingIndicator.classList.add("active");
+
+            logSession("submit", emailValue, { keepalive: false });
+
+            formSection.style.display = "none";
+            successSection.style.display = "block";
+            loadingIndicator.classList.remove("active");
+        });
+
+        function handlePossibleLeave() {
+            if (!hasSubmitted) {
+                logSession("view_only", "", { keepalive: true });
+            }
+        }
+
+        document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "hidden") {
+                handlePossibleLeave();
+            }
+        });
+
+        window.addEventListener("pagehide", function () {
+            handlePossibleLeave();
+        });
     });
-  </script>
+</script>
+
 </body>
 </html>
